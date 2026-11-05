@@ -4,331 +4,330 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#101426">
-  <title>ContactHub | Intelligent Contact Management</title>
+  <title>ContactHub — Intelligent Contact Workspace</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="ambient ambient-one"></div>
-  <div class="ambient ambient-two"></div>
+  <div class="ambient ambient-a"></div>
+  <div class="ambient ambient-b"></div>
 
-  <div class="app-shell">
-    <aside class="sidebar glass">
+  <div class="layout">
+    <aside class="sidebar">
       <a class="brand" href="#">
-        <span class="brand-mark">C</span>
-        <span>Contact<span class="brand-light">Hub</span></span>
+        <span class="brand-icon">C</span>
+        <span>contact<span>hub</span></span>
       </a>
 
-      <div class="workspace-label">WORKSPACE</div>
-      <nav class="nav-menu">
-        <a class="nav-link active" href="#overview"><span>◈</span> Overview</a>
-        <a class="nav-link" href="#contacts"><span>▤</span> Contacts</a>
-        <a class="nav-link" href="#tree-section"><span>⌘</span> BST Explorer</a>
-        <a class="nav-link" href="#simulator"><span>⏵</span> Simulator</a>
-        <a class="nav-link" href="#analytics"><span>▥</span> Analytics</a>
-        <a class="nav-link" href="#assistant"><span>✧</span> AI Assistant</a>
-        <a class="nav-link" href="#activity"><span>◷</span> Activity</a>
+      <div class="side-caption">WORKSPACE</div>
+      <nav class="navigation">
+        <a class="nav-item active" href="#overview"><span>◫</span> Overview</a>
+        <a class="nav-item" href="#directory"><span>▤</span> Contacts</a>
+        <a class="nav-item" href="#bst-studio"><span>⌘</span> BST Studio</a>
+        <a class="nav-item" href="#laboratory"><span>⏵</span> Operation Lab</a>
+        <a class="nav-item" href="#insights"><span>◷</span> Analytics</a>
+        <a class="nav-item" href="#assistant"><span>✧</span> Assistant</a>
+        <a class="nav-item" href="#history"><span>↗</span> Activity</a>
       </nav>
 
       <div class="sidebar-bottom">
-        <div class="storage-card">
-          <div class="storage-icon">◉</div>
-          <div>
-            <strong>Local workspace</strong>
-            <small>Your data stays in this browser</small>
-          </div>
-          <span class="online-dot"></span>
+        <div class="workspace-status">
+          <span class="status-indicator"></span>
+          <div><strong>Workspace active</strong><small>Browser storage enabled</small></div>
         </div>
-        <button class="nav-link full-button" id="themeBtn"><span>◐</span> Change appearance</button>
-        <button class="nav-link full-button" id="adminBtn"><span>♙</span> Admin access</button>
+        <button class="side-action" id="themeToggle"><span>◐</span> Appearance</button>
+        <button class="side-action" id="adminOpen"><span>♙</span> Admin workspace</button>
       </div>
     </aside>
 
-    <main class="main-content">
-      <header class="topbar">
+    <main class="main">
+      <header class="topbar" id="overview">
         <div>
-          <div class="eyebrow">CONTACT MANAGEMENT SYSTEM</div>
-          <h1>Workspace <span class="heading-dot">.</span></h1>
+          <div class="breadcrumb">WORKSPACE <span>/</span> OVERVIEW</div>
+          <h1>Good to see you <span class="gradient-text">again.</span></h1>
+          <p class="top-subtitle">Your contacts, organized intelligently.</p>
         </div>
-        <div class="top-actions">
-          <span class="date-chip" id="todayDate"></span>
-          <button class="icon-button" id="soundBtn" title="Toggle sound">♫</button>
-          <div class="avatar">CH</div>
+        <div class="topbar-actions">
+          <div class="date-display" id="today"></div>
+          <button class="round-button" id="soundToggle" title="Sound effects">♫</button>
+          <div class="user-avatar">CH</div>
         </div>
       </header>
 
-      <section class="welcome glass" id="overview">
-        <div class="welcome-copy">
-          <span class="pill"><span class="online-dot"></span> SYSTEM OPERATIONAL</span>
-          <h2>Manage connections.<br><span>Think in structures.</span></h2>
-          <p>A smarter way to organize contacts using Binary Search Tree technology.</p>
-          <a href="#contacts" class="primary-button">Explore workspace <span>↗</span></a>
-        </div>
-        <div class="welcome-art" aria-hidden="true">
-          <div class="orb orb-large"></div>
-          <div class="orb orb-small"></div>
-          <div class="orbit orbit-one"></div>
-          <div class="orbit orbit-two"></div>
-          <div class="art-node node-a">50</div>
-          <div class="art-node node-b">30</div>
-          <div class="art-node node-c">70</div>
-          <div class="art-node node-d">20</div>
-          <div class="art-node node-e">40</div>
-          <div class="art-node node-f">60</div>
-          <div class="art-node node-g">80</div>
-          <div class="art-line line-a"></div>
-          <div class="art-line line-b"></div>
-          <div class="art-line line-c"></div>
-          <div class="art-line line-d"></div>
-          <div class="art-line line-e"></div>
-          <div class="art-line line-f"></div>
-        </div>
-      </section>
-
-      <section class="stats-grid">
-        <article class="stat-card glass">
-          <div class="stat-top"><span>Total contacts</span><span class="stat-icon">♙</span></div>
-          <strong id="totalContacts">0</strong>
-          <small>Stored in your workspace</small>
-        </article>
-        <article class="stat-card glass">
-          <div class="stat-top"><span>Tree height</span><span class="stat-icon">⌘</span></div>
-          <strong id="treeHeight">0</strong>
-          <small>Maximum levels in BST</small>
-        </article>
-        <article class="stat-card glass">
-          <div class="stat-top"><span>Leaf nodes</span><span class="stat-icon">✧</span></div>
-          <strong id="leafNodes">0</strong>
-          <small>Nodes without children</small>
-        </article>
-        <article class="stat-card glass">
-          <div class="stat-top"><span>Operations</span><span class="stat-icon">↗</span></div>
-          <strong id="operationCount">0</strong>
-          <small>Actions this session</small>
-        </article>
-      </section>
-
-      <section class="content-grid">
-        <article class="panel glass" id="contacts">
-          <div class="section-heading">
-            <div>
-              <span class="eyebrow">DIRECTORY</span>
-              <h2>Contact management</h2>
-            </div>
-            <span class="mini-tag">BST · ID BASED</span>
+      <section class="hero">
+        <div class="hero-content">
+          <div class="hero-label"><span class="status-indicator"></span> INTELLIGENT CONTACT MANAGEMENT</div>
+          <h2>Every connection.<br><span>In the right place.</span></h2>
+          <p>Manage your contact directory with the power of Binary Search Trees. Explore, analyze and organize your data in one workspace.</p>
+          <div class="hero-actions">
+            <a href="#directory" class="button-primary">Manage contacts <span>↗</span></a>
+            <a href="#bst-studio" class="button-ghost">Explore BST <span>⌘</span></a>
           </div>
+        </div>
+        <div class="hero-visual" aria-hidden="true">
+          <div class="visual-ring ring-one"></div>
+          <div class="visual-ring ring-two"></div>
+          <div class="visual-core">BST</div>
+          <div class="visual-node vn1">50</div>
+          <div class="visual-node vn2">30</div>
+          <div class="visual-node vn3">70</div>
+          <div class="visual-node vn4">20</div>
+          <div class="visual-node vn5">40</div>
+          <div class="visual-node vn6">60</div>
+          <div class="visual-node vn7">80</div>
+          <div class="visual-connector vc1"></div>
+          <div class="visual-connector vc2"></div>
+          <div class="visual-connector vc3"></div>
+          <div class="visual-connector vc4"></div>
+          <div class="visual-connector vc5"></div>
+          <div class="visual-connector vc6"></div>
+        </div>
+      </section>
 
-          <form id="contactForm" class="contact-form">
-            <div class="field">
+      <section class="stats">
+        <article class="stat-card">
+          <div class="stat-icon purple">♙</div>
+          <div class="stat-label">TOTAL CONTACTS</div>
+          <div class="stat-value" id="statTotal">0</div>
+          <div class="stat-foot">Records in your directory</div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-icon cyan">⌘</div>
+          <div class="stat-label">TREE HEIGHT</div>
+          <div class="stat-value" id="statHeight">0</div>
+          <div class="stat-foot">Longest root-to-leaf path</div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-icon green">✧</div>
+          <div class="stat-label">LEAF NODES</div>
+          <div class="stat-value" id="statLeaves">0</div>
+          <div class="stat-foot">Nodes without children</div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-icon orange">↗</div>
+          <div class="stat-label">OPERATIONS</div>
+          <div class="stat-value" id="statOperations">0</div>
+          <div class="stat-foot">Actions this session</div>
+        </article>
+      </section>
+
+      <section class="section-block" id="directory">
+        <div class="section-title">
+          <div><div class="eyebrow">YOUR DIRECTORY</div><h2>Contact management</h2></div>
+          <span class="section-chip">ID-BASED ORGANIZATION</span>
+        </div>
+
+        <div class="directory-layout">
+          <div class="panel add-panel">
+            <div class="panel-heading">
+              <div><span class="panel-icon">＋</span><h3 id="formHeading">Add a contact</h3></div>
+              <span class="tiny-label">NEW RECORD</span>
+            </div>
+            <form id="contactForm">
+              <input type="hidden" id="editOriginalId">
               <label for="contactId">Contact ID</label>
               <input id="contactId" type="number" min="1" placeholder="e.g. 105" required>
-            </div>
-            <div class="field">
               <label for="contactName">Full name</label>
-              <input id="contactName" type="text" maxlength="60" placeholder="Enter full name" required>
-            </div>
-            <div class="field">
+              <input id="contactName" type="text" maxlength="60" placeholder="Enter contact name" required>
               <label for="contactPhone">Phone number</label>
-              <input id="contactPhone" type="tel" maxlength="20" placeholder="+91 98765 43210" required>
+              <input id="contactPhone" type="tel" maxlength="25" placeholder="+91 98765 43210" required>
+              <div class="form-buttons">
+                <button class="button-primary full" id="saveContact" type="submit">Add contact <span>＋</span></button>
+                <button class="button-ghost full hidden" id="cancelEdit" type="button">Cancel edit</button>
+              </div>
+            </form>
+            <div class="form-note"><span>✧</span> Each contact ID must be unique.</div>
+          </div>
+
+          <div class="panel directory-panel">
+            <div class="panel-heading">
+              <div><span class="panel-icon">▤</span><h3>All contacts</h3></div>
+              <span class="record-count" id="recordCount">0 records</span>
             </div>
-            <button class="primary-button form-submit" type="submit">＋ Add contact</button>
-          </form>
-
-          <div class="toolbar">
-            <div class="search-box">
-              <span>⌕</span>
-              <input id="directorySearch" type="search" placeholder="Search by ID, name or phone...">
+            <div class="directory-toolbar">
+              <div class="search-input"><span>⌕</span><input id="searchInput" type="search" placeholder="Search ID, name or phone..."></div>
+              <select id="sortSelect" aria-label="Sort contacts">
+                <option value="asc">ID: Low to high</option>
+                <option value="desc">ID: High to low</option>
+                <option value="name">Name: A to Z</option>
+              </select>
             </div>
-            <button class="secondary-button" id="exportCsvBtn">↓ CSV</button>
-            <button class="secondary-button" id="exportPdfBtn">▣ PDF</button>
-            <button class="secondary-button" id="importBtn">↑ Import</button>
-            <input type="file" id="importFile" accept=".csv,text/csv" hidden>
+            <div class="table-scroll">
+              <table>
+                <thead><tr><th>CONTACT</th><th>ID</th><th>PHONE</th><th>TOOLS</th></tr></thead>
+                <tbody id="contactRows"></tbody>
+              </table>
+            </div>
+            <div class="directory-footer">
+              <span id="showingCount">Showing 0 contacts</span>
+              <div class="export-actions">
+                <button class="small-button" id="csvExport">↓ CSV</button>
+                <button class="small-button" id="pdfExport">▣ PDF</button>
+                <button class="small-button" id="csvImport">↑ Import</button>
+                <input id="csvFile" type="file" accept=".csv,text/csv" hidden>
+              </div>
+            </div>
           </div>
+        </div>
+      </section>
 
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr><th>ID</th><th>CONTACT</th><th>PHONE</th><th>ACTION</th></tr>
-              </thead>
-              <tbody id="contactTable">
-                <tr><td colspan="4" class="empty-state">No contacts yet. Add your first contact.</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="table-footer">
-            <span id="directoryCount">0 contacts</span>
-            <span>Sorted by Contact ID</span>
-          </div>
-        </article>
+      <section class="section-block" id="bst-studio">
+        <div class="section-title">
+          <div><div class="eyebrow">DATA STRUCTURE ENGINE</div><h2>Binary Search Tree studio</h2></div>
+          <span class="section-chip live-chip"><i></i> LIVE VISUALIZATION</span>
+        </div>
 
-        <article class="panel glass" id="tree-section">
-          <div class="section-heading">
+        <div class="panel bst-panel">
+          <div class="bst-toolbar">
             <div>
-              <span class="eyebrow">DATA STRUCTURE VISUALIZATION</span>
-              <h2>3D BST explorer</h2>
+              <h3>Tree visualization</h3>
+              <p>Click any node to inspect its contact record.</p>
             </div>
-            <span class="live-tag"><span class="online-dot"></span> LIVE TREE</span>
+            <div class="tree-controls">
+              <select id="traversalSelect" aria-label="Traversal type">
+                <option value="inorder">Inorder</option>
+                <option value="preorder">Preorder</option>
+                <option value="postorder">Postorder</option>
+              </select>
+              <button class="small-button" id="fitTree">Fit tree</button>
+            </div>
           </div>
           <div class="tree-legend">
-            <span><i class="legend-dot"></i> Contact node</span>
-            <span><i class="legend-line"></i> Parent connection</span>
+            <span><i class="legend-node"></i> Contact node</span>
+            <span><i class="legend-edge"></i> Parent connection</span>
+            <span><i class="legend-active"></i> Search highlight</span>
           </div>
-          <div class="tree-stage" id="treeStage">
-            <div class="tree-empty">Your Binary Search Tree will appear here.<br><small>Add contacts to build your tree.</small></div>
-          </div>
-          <div class="tree-footer">
-            <span>LEFT: smaller IDs</span>
-            <span>RIGHT: larger IDs</span>
-          </div>
-        </article>
-      </section>
-
-      <section class="content-grid lower-grid">
-        <article class="panel glass" id="simulator">
-          <div class="section-heading">
-            <div>
-              <span class="eyebrow">LEARN BY INTERACTING</span>
-              <h2>BST operation simulator</h2>
-            </div>
-            <span class="mini-tag">STEP MODE</span>
-          </div>
-          <p class="muted">Enter an ID to see how the Binary Search Tree processes an operation.</p>
-          <div class="sim-controls">
-            <input id="simId" type="number" min="1" placeholder="Enter contact ID">
-            <select id="simOperation">
-              <option value="search">Search</option>
-              <option value="insert">Insert sample node</option>
-            </select>
-            <button class="primary-button" id="simulateBtn">Simulate</button>
-          </div>
-          <div class="simulation-output" id="simulationOutput">
-            <div class="sim-placeholder">⌘ Your operation steps will appear here.</div>
-          </div>
-        </article>
-
-        <article class="panel glass" id="analytics">
-          <div class="section-heading">
-            <div>
-              <span class="eyebrow">STRUCTURE INSIGHTS</span>
-              <h2>Analytics overview</h2>
-            </div>
-            <span class="mini-tag">LIVE METRICS</span>
-          </div>
-          <div class="analytics-list">
-            <div class="metric-row"><span>Leaf nodes</span><strong id="analyticsLeaves">0</strong></div>
-            <div class="metric-row"><span>Internal nodes</span><strong id="internalNodes">0</strong></div>
-            <div class="metric-row"><span>Tree levels</span><strong id="analyticsHeight">0</strong></div>
-            <div class="metric-row"><span>Maximum possible nodes at this height</span><strong id="maxNodes">0</strong></div>
-          </div>
-          <div class="complexity-card">
-            <div class="complexity-top"><span>BST average search</span><strong>O(log n)</strong></div>
-            <div class="complexity-bar"><span></span></div>
-            <small>Average case for a reasonably balanced tree. Worst case: O(n).</small>
-          </div>
-          <div class="complexity-card secondary-complexity">
-            <div class="complexity-top"><span>Inorder traversal</span><strong>O(n)</strong></div>
-            <small>Visits every node once, in ascending ID order.</small>
-          </div>
-        </article>
-      </section>
-
-      <section class="content-grid lower-grid">
-        <article class="panel glass" id="assistant">
-          <div class="section-heading">
-            <div>
-              <span class="eyebrow">YOUR LOCAL DATA ASSISTANT</span>
-              <h2>ContactHub assistant <span class="sparkle">✧</span></h2>
-            </div>
-            <span class="mini-tag">LOCAL MODE</span>
-          </div>
-          <div class="assistant-chat" id="assistantChat">
-            <div class="assistant-message">
-              <span class="assistant-avatar">✧</span>
-              <p>Hello! I'm your ContactHub assistant. Ask me about your contacts, tree height, leaf nodes or search operations.</p>
+          <div class="tree-viewport" id="treeViewport">
+            <div id="treeCanvas" class="tree-canvas">
+              <div class="tree-empty"><div>⌘</div><strong>Your BST will appear here</strong><span>Add contacts to build your tree structure.</span></div>
             </div>
           </div>
-          <form id="assistantForm" class="assistant-input">
-            <input id="assistantQuestion" type="text" placeholder="Ask something about your contacts..." autocomplete="off">
-            <button type="submit" aria-label="Send message">➤</button>
-          </form>
-          <div class="quick-prompts">
-            <button data-question="How many contacts do I have?">Total contacts</button>
-            <button data-question="Show the highest ID">Highest ID</button>
-            <button data-question="Explain my BST">Explain BST</button>
+          <div class="traversal-output">
+            <div><span class="eyebrow" id="traversalLabel">INORDER TRAVERSAL</span><p id="traversalResult">No nodes available</p></div>
+            <span class="complexity-pill">O(n)</span>
           </div>
-        </article>
-
-        <article class="panel glass" id="activity">
-          <div class="section-heading">
-            <div>
-              <span class="eyebrow">WORKSPACE MONITOR</span>
-              <h2>Activity timeline</h2>
-            </div>
-            <button class="text-button" id="clearActivityBtn">Clear history</button>
-          </div>
-          <div class="activity-list" id="activityList">
-            <div class="activity-empty">Your recent actions will appear here.</div>
-          </div>
-        </article>
-      </section>
-
-      <section class="panel glass traversal-panel">
-        <div class="section-heading">
-          <div>
-            <span class="eyebrow">TREE TRAVERSAL</span>
-            <h2>Inorder sequence</h2>
-          </div>
-          <span class="mini-tag">ASCENDING ORDER</span>
         </div>
-        <div id="inorderSequence" class="sequence"><span class="muted">No nodes available</span></div>
-        <p class="muted small-note">Inorder traversal follows Left → Root → Right, displaying contact IDs in ascending order.</p>
+      </section>
+
+      <section class="section-block" id="laboratory">
+        <div class="section-title">
+          <div><div class="eyebrow">INTERACTIVE LEARNING</div><h2>Operation laboratory</h2></div>
+          <span class="section-chip">STEP-BY-STEP MODE</span>
+        </div>
+        <div class="lab-grid">
+          <div class="panel lab-panel">
+            <h3>Simulate a BST operation</h3>
+            <p class="panel-description">Explore how a contact ID travels through the tree.</p>
+            <div class="lab-controls">
+              <input id="labId" type="number" min="1" placeholder="Enter contact ID">
+              <select id="labOperation">
+                <option value="search">Search</option>
+                <option value="insert">Insertion path</option>
+                <option value="delete">Deletion analysis</option>
+              </select>
+              <button class="button-primary" id="runLab">Run simulation</button>
+            </div>
+            <div class="lab-result" id="labResult"><div class="lab-placeholder">Your operation steps will appear here.</div></div>
+          </div>
+
+          <div class="panel insights-panel" id="insights">
+            <div class="panel-heading"><div><span class="panel-icon">◈</span><h3>Tree intelligence</h3></div><span class="tiny-label">LIVE METRICS</span></div>
+            <div class="insight-row"><span>Internal nodes</span><strong id="internalMetric">0</strong></div>
+            <div class="insight-row"><span>Minimum contact ID</span><strong id="minimumMetric">—</strong></div>
+            <div class="insight-row"><span>Maximum contact ID</span><strong id="maximumMetric">—</strong></div>
+            <div class="insight-row"><span>Balance factor at root</span><strong id="balanceMetric">0</strong></div>
+            <div class="insight-row"><span>Maximum possible nodes at current height</span><strong id="capacityMetric">0</strong></div>
+            <div class="complexity-info">
+              <div><span>Average search</span><strong>O(log n)</strong></div>
+              <div class="complexity-track"><i></i></div>
+              <small>Average case for a reasonably balanced BST. Worst case: O(n).</small>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-block">
+        <div class="section-title">
+          <div><div class="eyebrow">WORKSPACE INTELLIGENCE</div><h2>Assistant & activity</h2></div>
+        </div>
+        <div class="lab-grid">
+          <div class="panel assistant-panel" id="assistant">
+            <div class="panel-heading">
+              <div><span class="assistant-mark">✧</span><h3>ContactHub assistant</h3></div>
+              <span class="tiny-label">LOCAL ASSISTANT</span>
+            </div>
+            <div class="chat-window" id="chatWindow">
+              <div class="chat-line bot"><span>✧</span><p>Hi! Ask me about your contacts, BST height, leaf nodes, traversal or search results.</p></div>
+            </div>
+            <form class="chat-form" id="chatForm">
+              <input id="chatInput" placeholder="Ask about your contact data..." autocomplete="off">
+              <button type="submit">➤</button>
+            </form>
+            <div class="suggestions">
+              <button data-prompt="How many contacts do I have?">Contact count</button>
+              <button data-prompt="Explain my tree">Explain my tree</button>
+              <button data-prompt="Show inorder traversal">Inorder traversal</button>
+            </div>
+          </div>
+
+          <div class="panel activity-panel" id="history">
+            <div class="panel-heading">
+              <div><span class="panel-icon">◷</span><h3>Recent activity</h3></div>
+              <button class="text-button" id="clearHistory">Clear history</button>
+            </div>
+            <div class="activity-feed" id="activityFeed"><div class="activity-empty">Your workspace activity will appear here.</div></div>
+          </div>
+        </div>
       </section>
 
       <footer class="footer">
-        <div class="brand footer-brand"><span class="brand-mark">C</span> ContactHub</div>
-        <span>Designed for intelligent contact organization.</span>
-        <span>Binary Search Tree · <span id="footerYear"></span></span>
+        <div class="brand footer-brand"><span class="brand-icon">C</span><span>contact<span>hub</span></span></div>
+        <span>Organized by logic. Designed for clarity.</span>
+        <span>Binary Search Tree · <span id="year"></span></span>
       </footer>
     </main>
   </div>
 
   <div class="toast" id="toast"></div>
 
-  <div class="modal-backdrop" id="profileModal">
-    <div class="modal glass">
-      <button class="modal-close" data-close="profileModal">×</button>
-      <span class="eyebrow">CONTACT PROFILE</span>
-      <div class="profile-avatar" id="profileAvatar">CH</div>
-      <h2 id="profileName">Contact name</h2>
-      <p class="muted">ContactHub directory record</p>
-      <div class="profile-details">
+  <div class="modal-overlay" id="profileModal">
+    <div class="modal">
+      <button class="modal-x" data-close="profileModal">×</button>
+      <div class="eyebrow">CONTACT PROFILE</div>
+      <div class="profile-initials" id="profileInitials">CH</div>
+      <h2 id="profileName">Contact</h2>
+      <p class="panel-description">Contact record details</p>
+      <div class="profile-info">
         <div><small>CONTACT ID</small><strong id="profileId"></strong></div>
         <div><small>PHONE NUMBER</small><strong id="profilePhone"></strong></div>
       </div>
-      <button class="secondary-button danger-button" id="profileDeleteBtn">Delete contact</button>
+      <div class="modal-actions">
+        <button class="button-primary" id="profileEdit">Edit contact</button>
+        <button class="button-danger" id="profileDelete">Delete</button>
+      </div>
     </div>
   </div>
 
-  <div class="modal-backdrop" id="adminModal">
-    <div class="modal glass">
-      <button class="modal-close" data-close="adminModal">×</button>
-      <span class="eyebrow">WORKSPACE ACCESS</span>
-      <div class="admin-symbol">♙</div>
-      <h2 id="adminTitle">Admin access</h2>
-      <p class="muted" id="adminDescription">Enter your local workspace PIN to unlock admin controls.</p>
+  <div class="modal-overlay" id="adminModal">
+    <div class="modal">
+      <button class="modal-x" data-close="adminModal">×</button>
+      <div class="eyebrow">WORKSPACE CONTROL</div>
+      <div class="admin-emblem">♙</div>
+      <h2 id="adminHeading">Admin workspace</h2>
+      <p class="panel-description" id="adminDescription">Enter your local PIN to access workspace controls.</p>
       <form id="adminForm">
-        <input id="adminPin" type="password" inputmode="numeric" placeholder="Enter admin PIN" required>
-        <button class="primary-button full-width" type="submit">Unlock workspace</button>
+        <input id="adminPin" type="password" placeholder="Enter admin PIN" required>
+        <button class="button-primary full" type="submit">Unlock workspace</button>
       </form>
-      <div id="adminControls" class="admin-controls hidden">
-        <p class="success-text">✓ Admin workspace unlocked</p>
-        <button class="secondary-button full-width" id="changePinBtn">Change admin PIN</button>
-        <button class="secondary-button full-width" id="lockAdminBtn">Lock workspace</button>
-        <small>Client-side demo access only. Do not use this to protect sensitive data.</small>
+      <div id="adminUnlocked" class="hidden admin-unlocked">
+        <div class="admin-success">✓ Workspace unlocked</div>
+        <button class="small-button full" id="changePin">Change PIN</button>
+        <button class="small-button full" id="lockWorkspace">Lock workspace</button>
+        <small>This is a local interface lock, not server-side authentication.</small>
       </div>
-      <small class="hint-text" id="pinHint">First-time default PIN: 2468. Change it after entering.</small>
+      <small class="admin-hint" id="adminHint">First-time PIN: 2468. Change it after unlocking.</small>
     </div>
   </div>
 
