@@ -4,7 +4,11 @@
    Binary Search Tree Contact Management
 ========================================== */
 
-// BST NODE
+
+// ==========================================
+// 1. BST NODE
+// ==========================================
+
 class Node {
     constructor(id, name, phone) {
         this.id = id;
@@ -16,14 +20,19 @@ class Node {
 }
 
 
-// BINARY SEARCH TREE
+// ==========================================
+// 2. BINARY SEARCH TREE
+// ==========================================
+
 class BinarySearchTree {
+
     constructor() {
         this.root = null;
     }
 
-    // INSERT
+    // INSERT CONTACT
     insert(id, name, phone) {
+
         const newNode = new Node(id, name, phone);
 
         if (!this.root) {
@@ -34,30 +43,43 @@ class BinarySearchTree {
         let current = this.root;
 
         while (true) {
-            if (id === current.id) return false;
+
+            if (id === current.id) {
+                return false;
+            }
 
             if (id < current.id) {
+
                 if (!current.left) {
                     current.left = newNode;
                     return true;
                 }
+
                 current = current.left;
+
             } else {
+
                 if (!current.right) {
                     current.right = newNode;
                     return true;
                 }
+
                 current = current.right;
             }
         }
     }
 
-    // SEARCH
+
+    // SEARCH CONTACT
     search(id) {
+
         let current = this.root;
 
         while (current) {
-            if (id === current.id) return current;
+
+            if (id === current.id) {
+                return current;
+            }
 
             if (id < current.id) {
                 current = current.left;
@@ -69,18 +91,26 @@ class BinarySearchTree {
         return null;
     }
 
-    // DELETE
+
+    // DELETE CONTACT
     delete(id) {
+
         let deleted = false;
 
         const remove = (node, id) => {
+
             if (!node) return null;
 
             if (id < node.id) {
+
                 node.left = remove(node.left, id);
+
             } else if (id > node.id) {
+
                 node.right = remove(node.right, id);
+
             } else {
+
                 deleted = true;
 
                 // CASE 1: NO CHILDREN
@@ -88,12 +118,19 @@ class BinarySearchTree {
                     return null;
                 }
 
-                // CASE 2: ONE CHILD
-                if (!node.left) return node.right;
-                if (!node.right) return node.left;
+                // CASE 2: ONLY RIGHT CHILD
+                if (!node.left) {
+                    return node.right;
+                }
+
+                // CASE 2: ONLY LEFT CHILD
+                if (!node.right) {
+                    return node.left;
+                }
 
                 // CASE 3: TWO CHILDREN
                 // Find inorder successor
+
                 let successor = node.right;
 
                 while (successor.left) {
@@ -104,20 +141,31 @@ class BinarySearchTree {
                 node.name = successor.name;
                 node.phone = successor.phone;
 
-                node.right = removeSuccessor(node.right, successor.id);
+                node.right = removeSuccessor(
+                    node.right,
+                    successor.id
+                );
             }
 
             return node;
         };
 
+
+        // Remove inorder successor
         const removeSuccessor = (node, id) => {
+
             if (!node) return null;
 
             if (id < node.id) {
+
                 node.left = removeSuccessor(node.left, id);
+
             } else if (id > node.id) {
+
                 node.right = removeSuccessor(node.right, id);
+
             } else {
+
                 if (!node.left) return node.right;
                 if (!node.right) return node.left;
             }
@@ -125,28 +173,38 @@ class BinarySearchTree {
             return node;
         };
 
+
         this.root = remove(this.root, id);
+
         return deleted;
     }
 
-    // INORDER TRAVERSAL: LEFT, ROOT, RIGHT
+
+    // INORDER TRAVERSAL
     inorder() {
+
         const result = [];
 
         const traverse = (node) => {
+
             if (!node) return;
 
             traverse(node.left);
+
             result.push(node);
+
             traverse(node.right);
         };
 
         traverse(this.root);
+
         return result;
     }
 
+
     // TREE HEIGHT
     height(node = this.root) {
+
         if (!node) return 0;
 
         return 1 + Math.max(
@@ -155,20 +213,29 @@ class BinarySearchTree {
         );
     }
 
-    // TOTAL NODES
+
+    // TOTAL CONTACTS
     count() {
         return this.inorder().length;
     }
 }
 
 
-// INITIALIZE TREE
+// ==========================================
+// 3. INITIALIZE BST
+// ==========================================
+
 const bst = new BinarySearchTree();
 
 
-// LOAD SAVED CONTACTS
+// ==========================================
+// 4. LOAD SAVED CONTACTS
+// ==========================================
+
 function loadContacts() {
+
     try {
+
         const saved = JSON.parse(
             localStorage.getItem("contacthub_contacts") || "[]"
         );
@@ -176,12 +243,14 @@ function loadContacts() {
         if (!Array.isArray(saved)) return;
 
         saved.forEach(contact => {
+
             if (
                 Number.isSafeInteger(contact.id) &&
                 contact.id > 0 &&
                 typeof contact.name === "string" &&
                 typeof contact.phone === "string"
             ) {
+
                 bst.insert(
                     contact.id,
                     contact.name,
@@ -189,15 +258,22 @@ function loadContacts() {
                 );
             }
         });
+
     } catch (error) {
-        console.error("Unable to load saved contacts:", error);
+
+        console.error("Unable to load contacts:", error);
+
         showToast("Could not load saved contacts.");
     }
 }
 
 
-// SAVE CONTACTS
+// ==========================================
+// 5. SAVE CONTACTS
+// ==========================================
+
 function saveContacts() {
+
     localStorage.setItem(
         "contacthub_contacts",
         JSON.stringify(bst.inorder())
@@ -205,38 +281,61 @@ function saveContacts() {
 }
 
 
-// SAFE HTML TEXT
+// ==========================================
+// 6. SAFE HTML TEXT
+// ==========================================
+
 function escapeHTML(value) {
+
     return String(value).replace(/[&<>"']/g, char => ({
+
         "&": "&amp;",
         "<": "&lt;",
         ">": "&gt;",
         '"': "&quot;",
         "'": "&#039;"
+
     })[char]);
 }
 
 
-// TOAST MESSAGE
+// ==========================================
+// 7. TOAST MESSAGE
+// ==========================================
+
 let toastTimer;
 
 function showToast(message) {
+
     const toast = document.getElementById("toast");
 
     toast.textContent = message;
+
     toast.classList.add("show");
 
     clearTimeout(toastTimer);
 
     toastTimer = setTimeout(() => {
+
         toast.classList.remove("show");
+
     }, 3000);
 }
 
 
-// ACTIVITY LOG
-function addActivity(title, description, symbol = "✳", color = "purple") {
-    const activityList = document.getElementById("activityList");
+// ==========================================
+// 8. ACTIVITY LOG
+// ==========================================
+
+function addActivity(
+    title,
+    description,
+    symbol = "✳",
+    color = "purple"
+) {
+
+    const activityList =
+        document.getElementById("activityList");
 
     const item = document.createElement("div");
     item.className = "activity-item";
@@ -254,67 +353,104 @@ function addActivity(title, description, symbol = "✳", color = "purple") {
     message.textContent = description;
 
     const time = document.createElement("time");
+
     time.textContent = new Date().toLocaleTimeString([], {
         hour: "2-digit",
         minute: "2-digit"
     });
 
     details.append(heading, message, time);
+
     item.append(icon, details);
 
     activityList.prepend(item);
 
-    // Keep recent activity limited
     while (activityList.children.length > 8) {
         activityList.lastElementChild.remove();
     }
 }
 
 
-// MODAL CONTROLS
+// ==========================================
+// 9. MODAL CONTROLS
+// ==========================================
+
 function openContactModal() {
-    document.getElementById("contactModal").classList.add("show");
+
+    document.getElementById("contactModal")
+        .classList.add("show");
+
     document.getElementById("contactId").focus();
 }
 
+
 function closeContactModal() {
-    document.getElementById("contactModal").classList.remove("show");
+
+    document.getElementById("contactModal")
+        .classList.remove("show");
+
     document.getElementById("contactForm").reset();
 }
 
 
-// INSERT CONTACT
-document.getElementById("contactForm").addEventListener("submit", function(event) {
+// ==========================================
+// 10. INSERT CONTACT
+// ==========================================
+
+document.getElementById("contactForm")
+.addEventListener("submit", function(event) {
+
     event.preventDefault();
 
-    const id = Number(document.getElementById("contactId").value);
-    const name = document.getElementById("contactName").value.trim();
-    const phone = document.getElementById("contactPhone").value.trim();
+    const id = Number(
+        document.getElementById("contactId").value
+    );
+
+    const name = document.getElementById("contactName")
+        .value.trim();
+
+    const phone = document.getElementById("contactPhone")
+        .value.trim();
+
 
     if (!Number.isSafeInteger(id) || id <= 0) {
+
         showToast("Enter a valid positive contact ID.");
+
         return;
     }
+
 
     if (name.length < 2) {
+
         showToast("Please enter a valid contact name.");
+
         return;
     }
+
 
     if (!/^[+()\d\s.-]{7,20}$/.test(phone)) {
+
         showToast("Please enter a valid phone number.");
+
         return;
     }
 
+
     if (bst.search(id)) {
+
         showToast("Contact ID already exists!");
+
         return;
     }
+
 
     const inserted = bst.insert(id, name, phone);
 
     if (inserted) {
+
         saveContacts();
+
         refreshDashboard();
 
         addActivity(
@@ -325,25 +461,43 @@ document.getElementById("contactForm").addEventListener("submit", function(event
         );
 
         showToast("Contact successfully inserted into BST!");
+
         closeContactModal();
     }
+
 });
 
 
-// SEARCH CONTACT
+// ==========================================
+// 11. SEARCH CONTACT
+// ==========================================
+
 function searchContact() {
+
     const input = document.getElementById("searchId");
+
     const id = Number(input.value);
 
-    if (!Number.isSafeInteger(id) || id <= 0 || input.value.trim() === "") {
+    if (
+        !Number.isSafeInteger(id) ||
+        id <= 0 ||
+        input.value.trim() === ""
+    ) {
+
         showToast("Enter a valid contact ID.");
+
         return;
     }
 
+
     const contact = bst.search(id);
 
+
     if (contact) {
-        showToast(`Found: ${contact.name} · ${contact.phone}`);
+
+        showToast(
+            `Found: ${contact.name} · ${contact.phone}`
+        );
 
         addActivity(
             "Contact searched",
@@ -353,7 +507,9 @@ function searchContact() {
         );
 
         highlightContact(id);
+
     } else {
+
         showToast(`Contact ID ${id} not found!`);
 
         addActivity(
@@ -366,19 +522,34 @@ function searchContact() {
 }
 
 
-// DELETE CONTACT
+// ==========================================
+// 12. DELETE CONTACT
+// ==========================================
+
 function deleteContact() {
+
     const input = document.getElementById("deleteId");
+
     const id = Number(input.value);
 
-    if (!Number.isSafeInteger(id) || id <= 0 || input.value.trim() === "") {
+
+    if (
+        !Number.isSafeInteger(id) ||
+        id <= 0 ||
+        input.value.trim() === ""
+    ) {
+
         showToast("Enter a valid contact ID.");
+
         return;
     }
 
+
     const contact = bst.search(id);
 
+
     if (!contact) {
+
         showToast(`Contact ID ${id} not found!`);
 
         addActivity(
@@ -391,11 +562,16 @@ function deleteContact() {
         return;
     }
 
+
     const name = contact.name;
+
     const deleted = bst.delete(id);
 
+
     if (deleted) {
+
         saveContacts();
+
         refreshDashboard();
 
         addActivity(
@@ -406,22 +582,29 @@ function deleteContact() {
         );
 
         showToast("Contact successfully deleted!");
+
         input.value = "";
     }
 }
 
 
-// DISPLAY CONTACTS USING INORDER
+// ==========================================
+// 13. DISPLAY CONTACTS
+// ==========================================
+
 function displayContacts() {
+
     const contacts = bst.inorder();
 
     refreshTable(contacts);
+
     displayTraversal(contacts);
 
-    document.getElementById("contacts").scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-    });
+    document.getElementById("contacts")
+        .scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
 
     addActivity(
         "Inorder traversal executed",
@@ -434,28 +617,39 @@ function displayContacts() {
 }
 
 
-// CONTACT TABLE
+// ==========================================
+// 14. CONTACT TABLE
+// ==========================================
+
 function refreshTable(contacts = bst.inorder()) {
+
     const tbody = document.getElementById("contactsTable");
 
     tbody.innerHTML = "";
 
     if (contacts.length === 0) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="5" class="empty-table">
-                    No contacts found.
-                </td>
-            </tr>
-        `;
 
-        document.getElementById("tableCount").textContent =
-            "Showing 0 contacts";
+        const row = document.createElement("tr");
+
+        const cell = document.createElement("td");
+
+        cell.colSpan = 5;
+        cell.className = "empty-table";
+        cell.textContent = "No contacts found.";
+
+        row.appendChild(cell);
+
+        tbody.appendChild(row);
+
+        document.getElementById("tableCount")
+            .textContent = "Showing 0 contacts";
 
         return;
     }
 
+
     contacts.forEach(contact => {
+
         const initials = contact.name
             .split(/\s+/)
             .map(part => part[0])
@@ -463,21 +657,28 @@ function refreshTable(contacts = bst.inorder()) {
             .slice(0, 2)
             .toUpperCase();
 
+
         const row = document.createElement("tr");
 
         row.innerHTML = `
-            <td><span class="id-badge">#${contact.id}</span></td>
+            <td>
+                <span class="id-badge">#${contact.id}</span>
+            </td>
 
             <td>
                 <div class="contact-name">
-                    <div class="contact-avatar">${escapeHTML(initials)}</div>
+                    <div class="contact-avatar">
+                        ${escapeHTML(initials)}
+                    </div>
                     ${escapeHTML(contact.name)}
                 </div>
             </td>
 
             <td>${escapeHTML(contact.phone)}</td>
 
-            <td><span class="status-badge">● Active</span></td>
+            <td>
+                <span class="status-badge">● Active</span>
+            </td>
 
             <td>
                 <button class="row-delete" data-id="${contact.id}">
@@ -489,18 +690,26 @@ function refreshTable(contacts = bst.inorder()) {
         tbody.appendChild(row);
     });
 
-    document.getElementById("tableCount").textContent =
+
+    document.getElementById("tableCount")
+        .textContent =
         `Showing ${contacts.length} contact${contacts.length === 1 ? "" : "s"}`;
 }
 
 
-// TABLE DELETE BUTTONS
-document.getElementById("contactsTable").addEventListener("click", function(event) {
+// ==========================================
+// 15. TABLE DELETE BUTTONS
+// ==========================================
+
+document.getElementById("contactsTable")
+.addEventListener("click", function(event) {
+
     const button = event.target.closest(".row-delete");
 
     if (!button) return;
 
     const id = Number(button.dataset.id);
+
     const contact = bst.search(id);
 
     if (!contact) return;
@@ -508,7 +717,9 @@ document.getElementById("contactsTable").addEventListener("click", function(even
     const name = contact.name;
 
     if (bst.delete(id)) {
+
         saveContacts();
+
         refreshDashboard();
 
         addActivity(
@@ -523,264 +734,572 @@ document.getElementById("contactsTable").addEventListener("click", function(even
 });
 
 
-// TABLE FILTER
+// ==========================================
+// 16. FILTER CONTACTS
+// ==========================================
+
 function filterContacts() {
+
     const query = document.getElementById("tableSearch")
         .value.trim().toLowerCase();
 
     const filtered = bst.inorder().filter(contact =>
+
         String(contact.id).includes(query) ||
+
         contact.name.toLowerCase().includes(query) ||
+
         contact.phone.toLowerCase().includes(query)
+
     );
 
     refreshTable(filtered);
 }
 
 
-// INORDER TRAVERSAL OUTPUT
+// ==========================================
+// 17. INORDER TRAVERSAL OUTPUT
+// ==========================================
+
 function displayTraversal(contacts = bst.inorder()) {
+
     const output = document.getElementById("traversalOutput");
 
     output.innerHTML = "";
 
     if (contacts.length === 0) {
+
         const message = document.createElement("span");
+
         message.className = "muted";
+
         message.textContent = "The BST is empty.";
+
         output.appendChild(message);
+
         return;
     }
 
+
     contacts.forEach((contact, index) => {
+
         const chip = document.createElement("span");
+
         chip.className = "traversal-chip";
+
         chip.textContent = contact.id;
+
         output.appendChild(chip);
 
+
         if (index < contacts.length - 1) {
+
             const arrow = document.createElement("span");
+
             arrow.className = "traversal-arrow";
+
             arrow.textContent = "→";
+
             output.appendChild(arrow);
         }
     });
 }
 
 
-// UPDATE STATISTICS
+// ==========================================
+// 18. UPDATE DASHBOARD
+// ==========================================
+
 function refreshDashboard() {
+
     const contacts = bst.inorder();
 
-    document.getElementById("totalContacts").textContent =
-        contacts.length;
+    document.getElementById("totalContacts")
+        .textContent = contacts.length;
 
-    document.getElementById("highestId").textContent =
-        contacts.length ? contacts[contacts.length - 1].id : "—";
+    document.getElementById("highestId")
+        .textContent = contacts.length
+            ? contacts[contacts.length - 1].id
+            : "—";
 
-    document.getElementById("lowestId").textContent =
-        contacts.length ? contacts[0].id : "—";
+    document.getElementById("lowestId")
+        .textContent = contacts.length
+            ? contacts[0].id
+            : "—";
 
-    document.getElementById("treeHeight").textContent =
-        bst.height();
+    document.getElementById("treeHeight")
+        .textContent = bst.height();
 
-    document.getElementById("nodeCount").textContent =
-        contacts.length;
+    document.getElementById("nodeCount")
+        .textContent = contacts.length;
 
-    document.getElementById("rootNode").textContent =
-        bst.root ? `#${bst.root.id}` : "EMPTY";
+    document.getElementById("rootNode")
+        .textContent = bst.root
+            ? `#${bst.root.id}`
+            : "EMPTY";
 
     refreshTable(contacts);
+
     renderTree();
 }
 
 
-// VISUAL BST RENDERER
+// ==========================================
+// 19. ACTUAL HIERARCHICAL BST VISUALIZER
+// ==========================================
+
 function renderTree() {
+
     const svg = document.getElementById("treeSvg");
+
     const empty = document.getElementById("emptyTree");
 
     svg.innerHTML = "";
 
     if (!bst.root) {
+
         empty.style.display = "flex";
+
+        svg.style.width = "900px";
+        svg.style.height = "345px";
+
         return;
     }
 
     empty.style.display = "none";
 
-    const width = 900;
-    const height = 345;
-    const positions = new Map();
-    let index = 0;
 
-    // Assign X positions using inorder order.
-    // This preserves the BST's left-to-right ordering.
-    function assignPositions(node, depth) {
-        if (!node) return;
-
-        assignPositions(node.left, depth + 1);
-
-        positions.set(node.id, {
-            x: bst.count() === 1
-    ? width / 2
-    : 45 + index * (width - 90) / (bst.count() - 1),
-            y: 38 + depth * 67,
-            node: node
-        });
-
-        index++;
-
-        assignPositions(node.right, depth + 1);
-    }
-
-    assignPositions(bst.root, 0);
-
+    // SVG namespace
     const ns = "http://www.w3.org/2000/svg";
 
-    function createSvg(tag, attrs = {}) {
-        const element = document.createElementNS(ns, tag);
 
-        Object.entries(attrs).forEach(([key, value]) => {
-            element.setAttribute(key, value);
+    // TREE DIMENSIONS
+    const totalNodes = bst.count();
+
+    const treeHeight = bst.height();
+
+    const nodeRadius = 19;
+
+    const horizontalGap = 105;
+
+    const verticalGap = 85;
+
+    const margin = 65;
+
+    const width = Math.max(
+        900,
+        totalNodes * horizontalGap + margin * 2
+    );
+
+    const height = Math.max(
+        345,
+        100 + treeHeight * verticalGap
+    );
+
+
+    svg.setAttribute(
+        "viewBox",
+        `0 0 ${width} ${height}`
+    );
+
+    svg.setAttribute(
+        "preserveAspectRatio",
+        "xMinYMin meet"
+    );
+
+    svg.style.width = `${width}px`;
+
+    svg.style.height = `${height}px`;
+
+
+    // ======================================
+    // STEP A: CALCULATE REAL NODE POSITIONS
+    // ======================================
+
+    const positions = new Map();
+
+    let inorderIndex = 0;
+
+
+    function calculatePositions(node, depth) {
+
+        if (!node) return;
+
+
+        // LEFT SUBTREE
+        calculatePositions(node.left, depth + 1);
+
+
+        // CURRENT NODE
+        const x = margin +
+            inorderIndex * horizontalGap;
+
+        const y = 48 + depth * verticalGap;
+
+
+        positions.set(node.id, {
+            x: x,
+            y: y,
+            node: node,
+            depth: depth
         });
 
-        svg.appendChild(element);
+        inorderIndex++;
+
+
+        // RIGHT SUBTREE
+        calculatePositions(node.right, depth + 1);
+    }
+
+
+    calculatePositions(bst.root, 0);
+
+
+    // ======================================
+    // STEP B: SVG ELEMENT CREATOR
+    // ======================================
+
+    function makeElement(tag, attributes, parent = svg) {
+
+        const element = document.createElementNS(ns, tag);
+
+        Object.entries(attributes).forEach(([key, value]) => {
+
+            element.setAttribute(key, value);
+
+        });
+
+        parent.appendChild(element);
+
         return element;
     }
 
-    svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
-    svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
 
-    // Draw connecting branches
-    function drawEdges(node) {
+    // ======================================
+    // STEP C: DRAW CONNECTIONS
+    // ======================================
+
+    function drawConnections(node) {
+
         if (!node) return;
 
         const parent = positions.get(node.id);
 
-        [node.left, node.right].forEach(child => {
-            if (!child) return;
 
-            const childPosition = positions.get(child.id);
+        // CONNECT LEFT CHILD
+        if (node.left) {
 
-            createSvg("line", {
+            const child = positions.get(node.left.id);
+
+            makeElement("line", {
+
                 x1: parent.x,
-                y1: parent.y + 16,
-                x2: childPosition.x,
-                y2: childPosition.y - 16,
+                y1: parent.y + nodeRadius,
+
+                x2: child.x,
+                y2: child.y - nodeRadius,
+
                 class: "tree-edge"
+
             });
 
-            drawEdges(child);
-        });
+            drawConnections(node.left);
+        }
+
+
+        // CONNECT RIGHT CHILD
+        if (node.right) {
+
+            const child = positions.get(node.right.id);
+
+            makeElement("line", {
+
+                x1: parent.x,
+                y1: parent.y + nodeRadius,
+
+                x2: child.x,
+                y2: child.y - nodeRadius,
+
+                class: "tree-edge"
+
+            });
+
+            drawConnections(node.right);
+        }
     }
 
-    drawEdges(bst.root);
 
-    // Draw nodes
+    // Draw all branches before nodes
+    drawConnections(bst.root);
+
+
+    // ======================================
+    // STEP D: DRAW NODE CIRCLES
+    // ======================================
+
     function drawNodes(node) {
+
         if (!node) return;
 
         const pos = positions.get(node.id);
 
-        const group = createSvg("g", {
-            class: "tree-node",
-            "data-id": node.id
-        });
-
-        const circle = document.createElementNS(ns, "circle");
-
-        circle.setAttribute("cx", pos.x);
-        circle.setAttribute("cy", pos.y);
-        circle.setAttribute("r", "17");
-
         const isRoot = node === bst.root;
 
-        circle.setAttribute(
-            "fill",
-            isRoot ? "#7650d8" : "#174c81"
-        );
 
-        circle.setAttribute(
-            "stroke",
-            isRoot ? "#c49cff" : "#56b9ff"
-        );
+        const group = makeElement("g", {
 
-        circle.setAttribute("stroke-width", "2.5");
-        circle.style.filter = isRoot
-            ? "drop-shadow(0 0 9px #a875ff)"
-            : "drop-shadow(0 0 7px #388eff)";
+            class: "tree-node",
 
-        group.appendChild(circle);
+            "data-id": node.id
 
-        const label = document.createElementNS(ns, "text");
-
-        label.setAttribute("x", pos.x);
-        label.setAttribute("y", pos.y);
-        label.textContent = node.id;
-
-        group.appendChild(label);
-
-        group.addEventListener("click", () => {
-            showToast(`${node.name} · ${node.phone} · ID ${node.id}`);
         });
 
-        svg.appendChild(group);
 
+        // Node circle
+        makeElement("circle", {
+
+            cx: pos.x,
+            cy: pos.y,
+
+            r: nodeRadius,
+
+            fill: isRoot ? "#7650d8" : "#174c81",
+
+            stroke: isRoot ? "#d1aaff" : "#55c9ff",
+
+            "stroke-width": isRoot ? 3 : 2,
+
+            filter: isRoot
+                ? "url(#rootGlow)"
+                : "url(#nodeGlow)"
+
+        }, group);
+
+
+        // Contact ID
+        const label = makeElement("text", {
+
+            x: pos.x,
+
+            y: pos.y + 4,
+
+            "text-anchor": "middle",
+
+            fill: "#ffffff",
+
+            "font-size": "12",
+
+            "font-weight": "700"
+
+        }, group);
+
+
+        label.textContent = node.id;
+
+
+        // Root label
+        if (isRoot) {
+
+            const rootLabel = makeElement("text", {
+
+                x: pos.x,
+
+                y: pos.y - 30,
+
+                "text-anchor": "middle",
+
+                fill: "#c5a7ff",
+
+                "font-size": "10",
+
+                "font-weight": "700"
+
+            }, group);
+
+            rootLabel.textContent = "ROOT";
+        }
+
+
+        // Display contact information on clicking node
+        group.addEventListener("click", () => {
+
+            showToast(
+                `${node.name} | ${node.phone} | ID: ${node.id}`
+            );
+
+        });
+
+
+        // LEFT SUBTREE
         drawNodes(node.left);
+
+
+        // RIGHT SUBTREE
         drawNodes(node.right);
     }
 
+
+    // ======================================
+    // STEP E: ADD GLOW EFFECTS
+    // ======================================
+
+    const defs = makeElement("defs", {});
+
+
+    const rootFilter = makeElement("filter", {
+
+        id: "rootGlow",
+
+        x: "-100%",
+
+        y: "-100%",
+
+        width: "300%",
+
+        height: "300%"
+
+    }, defs);
+
+
+    makeElement("feGaussianBlur", {
+
+        stdDeviation: "5",
+
+        result: "blur"
+
+    }, rootFilter);
+
+
+    const rootMerge = makeElement("feMerge", {}, rootFilter);
+
+    makeElement("feMergeNode", {
+        in: "blur"
+    }, rootMerge);
+
+    makeElement("feMergeNode", {
+        in: "SourceGraphic"
+    }, rootMerge);
+
+
+    const nodeFilter = makeElement("filter", {
+
+        id: "nodeGlow",
+
+        x: "-100%",
+
+        y: "-100%",
+
+        width: "300%",
+
+        height: "300%"
+
+    }, defs);
+
+
+    makeElement("feGaussianBlur", {
+
+        stdDeviation: "3",
+
+        result: "blur"
+
+    }, nodeFilter);
+
+
+    const nodeMerge = makeElement("feMerge", {}, nodeFilter);
+
+    makeElement("feMergeNode", {
+        in: "blur"
+    }, nodeMerge);
+
+    makeElement("feMergeNode", {
+        in: "SourceGraphic"
+    }, nodeMerge);
+
+
+    // Draw nodes last so branches stay behind them
     drawNodes(bst.root);
 }
 
 
-// HIGHLIGHT SEARCHED CONTACT
+// ==========================================
+// 20. HIGHLIGHT SEARCHED CONTACT
+// ==========================================
+
 function highlightContact(id) {
+
     const nodes = document.querySelectorAll(".tree-node");
 
     nodes.forEach(group => {
+
         const circle = group.querySelector("circle");
 
         if (Number(group.dataset.id) === id) {
+
             circle.setAttribute("stroke", "#ffffff");
+
             circle.setAttribute("stroke-width", "5");
-            circle.style.filter = "drop-shadow(0 0 15px #ffffff)";
+
+            circle.style.filter =
+                "drop-shadow(0 0 15px #ffffff)";
         }
     });
 }
 
 
-// CLOSE MODAL WHEN CLICKING OUTSIDE
-document.getElementById("contactModal").addEventListener("click", function(event) {
+// ==========================================
+// 21. CLOSE MODAL OUTSIDE CLICK
+// ==========================================
+
+document.getElementById("contactModal")
+.addEventListener("click", function(event) {
+
     if (event.target === this) {
+
         closeContactModal();
     }
 });
 
 
-// ESCAPE KEY
+// ==========================================
+// 22. ESCAPE KEY
+// ==========================================
+
 document.addEventListener("keydown", function(event) {
+
     if (event.key === "Escape") {
+
         closeContactModal();
     }
 });
 
 
-// SIDEBAR ACTIVE LINK
+// ==========================================
+// 23. SIDEBAR ACTIVE LINK
+// ==========================================
+
 document.querySelectorAll(".nav-link").forEach(link => {
+
     link.addEventListener("click", function() {
-        document.querySelectorAll(".nav-link").forEach(item => {
-            item.classList.remove("active");
-        });
+
+        document.querySelectorAll(".nav-link")
+            .forEach(item => {
+
+                item.classList.remove("active");
+
+            });
 
         this.classList.add("active");
     });
 });
 
 
-// INITIALIZE CONTACTHUB
+// ==========================================
+// 24. INITIALIZE CONTACTHUB
+// ==========================================
+
 loadContacts();
+
 refreshDashboard();
+
 displayTraversal();
 
