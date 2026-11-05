@@ -1,13 +1,13 @@
 
-/* ==========================================
-   CONTACTHUB
-   Binary Search Tree Contact Management
-========================================== */
+/* ============================================
+   CONTACTHUB — CONTACT MANAGEMENT SYSTEM
+   DATA STRUCTURE: BINARY SEARCH TREE
+============================================ */
 
 
-// ==========================================
+// ============================================
 // 1. BST NODE
-// ==========================================
+// ============================================
 
 class Node {
     constructor(id, name, phone) {
@@ -20,9 +20,9 @@ class Node {
 }
 
 
-// ==========================================
-// 2. BINARY SEARCH TREE
-// ==========================================
+// ============================================
+// 2. BINARY SEARCH TREE CLASS
+// ============================================
 
 class BinarySearchTree {
 
@@ -30,7 +30,7 @@ class BinarySearchTree {
         this.root = null;
     }
 
-    // INSERT CONTACT
+    // INSERT
     insert(id, name, phone) {
 
         const newNode = new Node(id, name, phone);
@@ -44,9 +44,7 @@ class BinarySearchTree {
 
         while (true) {
 
-            if (id === current.id) {
-                return false;
-            }
+            if (id === current.id) return false;
 
             if (id < current.id) {
 
@@ -70,16 +68,14 @@ class BinarySearchTree {
     }
 
 
-    // SEARCH CONTACT
+    // SEARCH
     search(id) {
 
         let current = this.root;
 
         while (current) {
 
-            if (id === current.id) {
-                return current;
-            }
+            if (id === current.id) return current;
 
             if (id < current.id) {
                 current = current.left;
@@ -92,10 +88,20 @@ class BinarySearchTree {
     }
 
 
-    // DELETE CONTACT
+    // DELETE
     delete(id) {
 
         let deleted = false;
+
+        const minValue = node => {
+
+            while (node.left) {
+                node = node.left;
+            }
+
+            return node;
+        };
+
 
         const remove = (node, id) => {
 
@@ -113,66 +119,28 @@ class BinarySearchTree {
 
                 deleted = true;
 
-                // CASE 1: NO CHILDREN
+                // CASE 1: LEAF NODE
                 if (!node.left && !node.right) {
                     return null;
                 }
 
-                // CASE 2: ONLY RIGHT CHILD
-                if (!node.left) {
-                    return node.right;
-                }
+                // CASE 2: ONE CHILD
+                if (!node.left) return node.right;
 
-                // CASE 2: ONLY LEFT CHILD
-                if (!node.right) {
-                    return node.left;
-                }
+                if (!node.right) return node.left;
 
                 // CASE 3: TWO CHILDREN
-                // Find inorder successor
-
-                let successor = node.right;
-
-                while (successor.left) {
-                    successor = successor.left;
-                }
+                const successor = minValue(node.right);
 
                 node.id = successor.id;
                 node.name = successor.name;
                 node.phone = successor.phone;
 
-                node.right = removeSuccessor(
-                    node.right,
-                    successor.id
-                );
+                node.right = remove(node.right, successor.id);
             }
 
             return node;
         };
-
-
-        // Remove inorder successor
-        const removeSuccessor = (node, id) => {
-
-            if (!node) return null;
-
-            if (id < node.id) {
-
-                node.left = removeSuccessor(node.left, id);
-
-            } else if (id > node.id) {
-
-                node.right = removeSuccessor(node.right, id);
-
-            } else {
-
-                if (!node.left) return node.right;
-                if (!node.right) return node.left;
-            }
-
-            return node;
-        };
-
 
         this.root = remove(this.root, id);
 
@@ -185,14 +153,12 @@ class BinarySearchTree {
 
         const result = [];
 
-        const traverse = (node) => {
+        const traverse = node => {
 
             if (!node) return;
 
             traverse(node.left);
-
             result.push(node);
-
             traverse(node.right);
         };
 
@@ -202,7 +168,7 @@ class BinarySearchTree {
     }
 
 
-    // TREE HEIGHT
+    // HEIGHT
     height(node = this.root) {
 
         if (!node) return 0;
@@ -214,100 +180,73 @@ class BinarySearchTree {
     }
 
 
-    // TOTAL CONTACTS
+    // NODE COUNT
     count() {
+
         return this.inorder().length;
+    }
+
+
+    // MAXIMUM DEPTH / BALANCE INDICATOR
+    minimumHeight(node = this.root) {
+
+        if (!node) return 0;
+
+        return 1 + Math.min(
+            this.minimumHeight(node.left),
+            this.minimumHeight(node.right)
+        );
     }
 }
 
 
-// ==========================================
-// 3. INITIALIZE BST
-// ==========================================
+// ============================================
+// 3. INITIALIZE
+// ============================================
 
 const bst = new BinarySearchTree();
 
 
-// ==========================================
-// 4. LOAD SAVED CONTACTS
-// ==========================================
+// ============================================
+// 4. DOM HELPERS
+// ============================================
 
-function loadContacts() {
+const $ = id => document.getElementById(id);
 
-    try {
+let toastTimer;
 
-        const saved = JSON.parse(
-            localStorage.getItem("contacthub_contacts") || "[]"
-        );
-
-        if (!Array.isArray(saved)) return;
-
-        saved.forEach(contact => {
-
-            if (
-                Number.isSafeInteger(contact.id) &&
-                contact.id > 0 &&
-                typeof contact.name === "string" &&
-                typeof contact.phone === "string"
-            ) {
-
-                bst.insert(
-                    contact.id,
-                    contact.name,
-                    contact.phone
-                );
-            }
-        });
-
-    } catch (error) {
-
-        console.error("Unable to load contacts:", error);
-
-        showToast("Could not load saved contacts.");
-    }
-}
-
-
-// ==========================================
-// 5. SAVE CONTACTS
-// ==========================================
-
-function saveContacts() {
-
-    localStorage.setItem(
-        "contacthub_contacts",
-        JSON.stringify(bst.inorder())
-    );
-}
-
-
-// ==========================================
-// 6. SAFE HTML TEXT
-// ==========================================
 
 function escapeHTML(value) {
 
     return String(value).replace(/[&<>"']/g, char => ({
-
         "&": "&amp;",
         "<": "&lt;",
         ">": "&gt;",
         '"': "&quot;",
         "'": "&#039;"
-
     })[char]);
 }
 
 
-// ==========================================
-// 7. TOAST MESSAGE
-// ==========================================
+function initials(name) {
 
-let toastTimer;
+    return name
+        .trim()
+        .split(/\s+/)
+        .map(word => word[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase();
+}
 
-function showToast(message) {
 
-    const toast = document.getElementById("toast");
+// ============================================
+// 5. TOAST NOTIFICATIONS
+// ============================================
+
+function notify(message) {
+
+    const toast = $("toast");
 
     toast.textContent = message;
 
@@ -323,33 +262,125 @@ function showToast(message) {
 }
 
 
-// ==========================================
+// ============================================
+// 6. LOCAL STORAGE
+// ============================================
+
+function saveContacts() {
+
+    try {
+
+        localStorage.setItem(
+            "contacthub_records",
+            JSON.stringify(bst.inorder())
+        );
+
+    } catch (error) {
+
+        console.error(error);
+
+        notify("Unable to save contacts in this browser.");
+    }
+}
+
+
+function loadContacts() {
+
+    try {
+
+        const records = JSON.parse(
+            localStorage.getItem("contacthub_records") || "[]"
+        );
+
+        if (!Array.isArray(records)) return;
+
+        records.forEach(record => {
+
+            if (
+                Number.isSafeInteger(record.id) &&
+                record.id > 0 &&
+                typeof record.name === "string" &&
+                typeof record.phone === "string"
+            ) {
+
+                bst.insert(
+                    record.id,
+                    record.name,
+                    record.phone
+                );
+            }
+        });
+
+    } catch (error) {
+
+        console.error("Loading error:", error);
+    }
+}
+
+
+// ============================================
+// 7. MODAL MANAGEMENT
+// ============================================
+
+function openModal() {
+
+    $("contactModal").classList.add("show");
+
+    $("contactId").focus();
+}
+
+
+function closeModal() {
+
+    $("contactModal").classList.remove("show");
+
+    $("contactForm").reset();
+}
+
+
+$("heroAdd").addEventListener("click", openModal);
+$("addAction").addEventListener("click", openModal);
+$("sidebarAdd").addEventListener("click", openModal);
+$("emptyAdd").addEventListener("click", openModal);
+
+$("closeModal").addEventListener("click", closeModal);
+$("cancelModal").addEventListener("click", closeModal);
+
+
+$("contactModal").addEventListener("click", event => {
+
+    if (event.target === $("contactModal")) {
+        closeModal();
+    }
+});
+
+
+// ============================================
 // 8. ACTIVITY LOG
-// ==========================================
+// ============================================
 
-function addActivity(
-    title,
-    description,
-    symbol = "✳",
-    color = "purple"
-) {
+function addActivity(title, description, symbol = "✦", color = "purple") {
 
-    const activityList =
-        document.getElementById("activityList");
+    const list = $("activityList");
 
     const item = document.createElement("div");
+
     item.className = "activity-item";
 
     const icon = document.createElement("div");
-    icon.className = `activity-symbol ${color}`;
+
+    icon.className = `activity-icon ${color}`;
+
     icon.textContent = symbol;
 
     const details = document.createElement("div");
 
     const heading = document.createElement("strong");
+
     heading.textContent = title;
 
     const message = document.createElement("small");
+
     message.textContent = description;
 
     const time = document.createElement("time");
@@ -363,67 +394,40 @@ function addActivity(
 
     item.append(icon, details);
 
-    activityList.prepend(item);
+    list.prepend(item);
 
-    while (activityList.children.length > 8) {
-        activityList.lastElementChild.remove();
+    while (list.children.length > 8) {
+        list.lastElementChild.remove();
     }
 }
 
 
-// ==========================================
-// 9. MODAL CONTROLS
-// ==========================================
+// ============================================
+// 9. INSERT CONTACT
+// ============================================
 
-function openContactModal() {
-
-    document.getElementById("contactModal")
-        .classList.add("show");
-
-    document.getElementById("contactId").focus();
-}
-
-
-function closeContactModal() {
-
-    document.getElementById("contactModal")
-        .classList.remove("show");
-
-    document.getElementById("contactForm").reset();
-}
-
-
-// ==========================================
-// 10. INSERT CONTACT
-// ==========================================
-
-document.getElementById("contactForm")
-.addEventListener("submit", function(event) {
+$("contactForm").addEventListener("submit", event => {
 
     event.preventDefault();
 
-    const id = Number(
-        document.getElementById("contactId").value
-    );
+    const id = Number($("contactId").value);
 
-    const name = document.getElementById("contactName")
-        .value.trim();
+    const name = $("contactName").value.trim();
 
-    const phone = document.getElementById("contactPhone")
-        .value.trim();
+    const phone = $("contactPhone").value.trim();
 
 
     if (!Number.isSafeInteger(id) || id <= 0) {
 
-        showToast("Enter a valid positive contact ID.");
+        notify("Please enter a valid positive Contact ID.");
 
         return;
     }
 
 
-    if (name.length < 2) {
+    if (name.length < 2 || name.length > 60) {
 
-        showToast("Please enter a valid contact name.");
+        notify("Enter a valid contact name.");
 
         return;
     }
@@ -431,7 +435,7 @@ document.getElementById("contactForm")
 
     if (!/^[+()\d\s.-]{7,20}$/.test(phone)) {
 
-        showToast("Please enter a valid phone number.");
+        notify("Enter a valid phone number.");
 
         return;
     }
@@ -439,7 +443,7 @@ document.getElementById("contactForm")
 
     if (bst.search(id)) {
 
-        showToast("Contact ID already exists!");
+        notify("This Contact ID already exists!");
 
         return;
     }
@@ -454,37 +458,36 @@ document.getElementById("contactForm")
         refreshDashboard();
 
         addActivity(
-            "Contact inserted",
-            `${name} · ID ${id}`,
+            "New contact inserted",
+            `${name} · Contact ID ${id}`,
             "＋",
-            "purple"
+            "purple-symbol"
         );
 
-        showToast("Contact successfully inserted into BST!");
+        closeModal();
 
-        closeContactModal();
+        notify(`${name} successfully added to ContactHub!`);
     }
-
 });
 
 
-// ==========================================
-// 11. SEARCH CONTACT
-// ==========================================
+// ============================================
+// 10. SEARCH CONTACT
+// ============================================
 
 function searchContact() {
 
-    const input = document.getElementById("searchId");
+    const value = $("searchId").value.trim();
 
-    const id = Number(input.value);
+    const id = Number(value);
 
     if (
+        value === "" ||
         !Number.isSafeInteger(id) ||
-        id <= 0 ||
-        input.value.trim() === ""
+        id <= 0
     ) {
 
-        showToast("Enter a valid contact ID.");
+        notify("Enter a valid Contact ID.");
 
         return;
     }
@@ -495,51 +498,59 @@ function searchContact() {
 
     if (contact) {
 
-        showToast(
-            `Found: ${contact.name} · ${contact.phone}`
-        );
-
         addActivity(
-            "Contact searched",
-            `${contact.name} · ID ${id}`,
+            "Contact found",
+            `${contact.name} · ID ${contact.id}`,
             "⌕",
-            "blue"
+            "blue-symbol"
         );
 
-        highlightContact(id);
+        notify(`Found: ${contact.name} · ${contact.phone}`);
+
+        showContactDetails(contact);
+
+        highlightTreeNode(id);
 
     } else {
 
-        showToast(`Contact ID ${id} not found!`);
-
         addActivity(
             "Search unsuccessful",
-            `No contact found with ID ${id}`,
+            `No contact exists with ID ${id}`,
             "!",
-            "pink"
+            "pink-symbol"
         );
+
+        notify(`Contact ID ${id} not found!`);
     }
 }
 
 
-// ==========================================
-// 12. DELETE CONTACT
-// ==========================================
+$("searchAction").addEventListener("click", searchContact);
+
+$("searchId").addEventListener("keydown", event => {
+
+    if (event.key === "Enter") searchContact();
+
+});
+
+
+// ============================================
+// 11. DELETE CONTACT
+// ============================================
 
 function deleteContact() {
 
-    const input = document.getElementById("deleteId");
+    const value = $("deleteId").value.trim();
 
-    const id = Number(input.value);
-
+    const id = Number(value);
 
     if (
+        value === "" ||
         !Number.isSafeInteger(id) ||
-        id <= 0 ||
-        input.value.trim() === ""
+        id <= 0
     ) {
 
-        showToast("Enter a valid contact ID.");
+        notify("Enter a valid Contact ID.");
 
         return;
     }
@@ -547,17 +558,16 @@ function deleteContact() {
 
     const contact = bst.search(id);
 
-
     if (!contact) {
-
-        showToast(`Contact ID ${id} not found!`);
 
         addActivity(
             "Delete unsuccessful",
-            `Contact ID ${id} does not exist`,
+            `Contact ID ${id} was not found`,
             "!",
-            "pink"
+            "pink-symbol"
         );
+
+        notify(`Contact ID ${id} not found!`);
 
         return;
     }
@@ -565,10 +575,7 @@ function deleteContact() {
 
     const name = contact.name;
 
-    const deleted = bst.delete(id);
-
-
-    if (deleted) {
+    if (bst.delete(id)) {
 
         saveContacts();
 
@@ -578,52 +585,87 @@ function deleteContact() {
             "Contact deleted",
             `${name} · ID ${id} removed`,
             "−",
-            "pink"
+            "pink-symbol"
         );
 
-        showToast("Contact successfully deleted!");
+        $("deleteId").value = "";
 
-        input.value = "";
+        notify(`${name} deleted successfully!`);
     }
 }
 
 
-// ==========================================
-// 13. DISPLAY CONTACTS
-// ==========================================
+$("deleteAction").addEventListener("click", deleteContact);
 
-function displayContacts() {
+$("deleteId").addEventListener("keydown", event => {
 
-    const contacts = bst.inorder();
+    if (event.key === "Enter") deleteContact();
 
-    refreshTable(contacts);
+});
 
-    displayTraversal(contacts);
 
-    document.getElementById("contacts")
-        .scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        });
+// ============================================
+// 12. CONTACT DETAILS
+// ============================================
 
-    addActivity(
-        "Inorder traversal executed",
-        `${contacts.length} contacts displayed in ascending order`,
-        "≡",
-        "cyan"
-    );
+function showContactDetails(contact) {
 
-    showToast("Contacts displayed in ascending ID order!");
+    $("contactDetails").innerHTML = `
+        <div class="details-content">
+
+            <div class="details-avatar">
+                ${escapeHTML(initials(contact.name))}
+            </div>
+
+            <div class="details-name">
+                ${escapeHTML(contact.name)}
+            </div>
+
+            <div class="detail-row">
+                <span>CONTACT ID</span>
+                <strong>#${contact.id}</strong>
+            </div>
+
+            <div class="detail-row">
+                <span>PHONE NUMBER</span>
+                <strong>${escapeHTML(contact.phone)}</strong>
+            </div>
+
+            <div class="detail-row">
+                <span>RECORD STATUS</span>
+                <strong style="color:#57e4ad">● Active</strong>
+            </div>
+
+        </div>
+    `;
+
+    $("detailsModal").classList.add("show");
 }
 
 
-// ==========================================
-// 14. CONTACT TABLE
-// ==========================================
+$("closeDetails").addEventListener("click", () => {
 
-function refreshTable(contacts = bst.inorder()) {
+    $("detailsModal").classList.remove("show");
 
-    const tbody = document.getElementById("contactsTable");
+});
+
+
+$("detailsModal").addEventListener("click", event => {
+
+    if (event.target === $("detailsModal")) {
+        $("detailsModal").classList.remove("show");
+    }
+
+});
+
+
+// ============================================
+// 13. CONTACT DIRECTORY
+// ============================================
+
+function renderContacts(contacts = bst.inorder()) {
+
+    const tbody = $("contactTable");
 
     tbody.innerHTML = "";
 
@@ -634,77 +676,70 @@ function refreshTable(contacts = bst.inorder()) {
         const cell = document.createElement("td");
 
         cell.colSpan = 5;
+
         cell.className = "empty-table";
-        cell.textContent = "No contacts found.";
+
+        cell.textContent = "No matching contacts found.";
 
         row.appendChild(cell);
 
         tbody.appendChild(row);
 
-        document.getElementById("tableCount")
-            .textContent = "Showing 0 contacts";
+    } else {
 
-        return;
+        contacts.forEach(contact => {
+
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>
+                    <span class="id-label">#${contact.id}</span>
+                </td>
+
+                <td>
+                    <div class="person">
+                        <div class="person-avatar">
+                            ${escapeHTML(initials(contact.name))}
+                        </div>
+                        ${escapeHTML(contact.name)}
+                    </div>
+                </td>
+
+                <td>${escapeHTML(contact.phone)}</td>
+
+                <td>
+                    <span class="contact-status">● Active</span>
+                </td>
+
+                <td>
+                    <button class="table-delete"
+                            data-id="${contact.id}">
+                        Delete
+                    </button>
+                </td>
+            `;
+
+            row.addEventListener("dblclick", () => {
+                showContactDetails(contact);
+            });
+
+            tbody.appendChild(row);
+        });
     }
 
 
-    contacts.forEach(contact => {
-
-        const initials = contact.name
-            .split(/\s+/)
-            .map(part => part[0])
-            .join("")
-            .slice(0, 2)
-            .toUpperCase();
-
-
-        const row = document.createElement("tr");
-
-        row.innerHTML = `
-            <td>
-                <span class="id-badge">#${contact.id}</span>
-            </td>
-
-            <td>
-                <div class="contact-name">
-                    <div class="contact-avatar">
-                        ${escapeHTML(initials)}
-                    </div>
-                    ${escapeHTML(contact.name)}
-                </div>
-            </td>
-
-            <td>${escapeHTML(contact.phone)}</td>
-
-            <td>
-                <span class="status-badge">● Active</span>
-            </td>
-
-            <td>
-                <button class="row-delete" data-id="${contact.id}">
-                    Delete
-                </button>
-            </td>
-        `;
-
-        tbody.appendChild(row);
-    });
-
-
-    document.getElementById("tableCount")
-        .textContent =
-        `Showing ${contacts.length} contact${contacts.length === 1 ? "" : "s"}`;
+    $("directoryCount").textContent =
+        `${contacts.length} contact${contacts.length === 1 ? "" : "s"}`;
 }
 
 
-// ==========================================
-// 15. TABLE DELETE BUTTONS
-// ==========================================
+// ============================================
+// 14. TABLE DELETE
+// ============================================
 
-document.getElementById("contactsTable")
-.addEventListener("click", function(event) {
+$("contactTable").addEventListener("click", event => {
 
-    const button = event.target.closest(".row-delete");
+    const button = event.target.closest(".table-delete");
 
     if (!button) return;
 
@@ -723,25 +758,24 @@ document.getElementById("contactsTable")
         refreshDashboard();
 
         addActivity(
-            "Contact deleted",
-            `${name} · ID ${id} removed`,
+            "Contact removed",
+            `${name} · ID ${id}`,
             "−",
-            "pink"
+            "pink-symbol"
         );
 
-        showToast("Contact deleted successfully!");
+        notify("Contact removed successfully!");
     }
 });
 
 
-// ==========================================
-// 16. FILTER CONTACTS
-// ==========================================
+// ============================================
+// 15. DIRECTORY SEARCH
+// ============================================
 
-function filterContacts() {
+$("filterInput").addEventListener("input", () => {
 
-    const query = document.getElementById("tableSearch")
-        .value.trim().toLowerCase();
+    const query = $("filterInput").value.trim().toLowerCase();
 
     const filtered = bst.inorder().filter(contact =>
 
@@ -753,106 +787,96 @@ function filterContacts() {
 
     );
 
-    refreshTable(filtered);
-}
+    renderContacts(filtered);
+});
 
 
-// ==========================================
-// 17. INORDER TRAVERSAL OUTPUT
-// ==========================================
+// ============================================
+// 16. INORDER TRAVERSAL DISPLAY
+// ============================================
 
-function displayTraversal(contacts = bst.inorder()) {
+function showInorder() {
 
-    const output = document.getElementById("traversalOutput");
+    const contacts = bst.inorder();
 
-    output.innerHTML = "";
+    const result = $("traversalResult");
+
+    result.innerHTML = "";
 
     if (contacts.length === 0) {
 
         const message = document.createElement("span");
 
-        message.className = "muted";
+        message.className = "traversal-placeholder";
 
-        message.textContent = "The BST is empty.";
+        message.textContent = "The Binary Search Tree is empty.";
 
-        output.appendChild(message);
+        result.appendChild(message);
 
-        return;
+    } else {
+
+        contacts.forEach((contact, index) => {
+
+            const chip = document.createElement("span");
+
+            chip.className = "traversal-chip";
+
+            chip.textContent = contact.id;
+
+            result.appendChild(chip);
+
+
+            if (index < contacts.length - 1) {
+
+                const arrow = document.createElement("span");
+
+                arrow.className = "traversal-arrow";
+
+                arrow.textContent = "→";
+
+                result.appendChild(arrow);
+            }
+        });
     }
 
+    addActivity(
+        "Inorder traversal executed",
+        `${contacts.length} records displayed in ascending order`,
+        "⇄",
+        "cyan-symbol"
+    );
 
-    contacts.forEach((contact, index) => {
-
-        const chip = document.createElement("span");
-
-        chip.className = "traversal-chip";
-
-        chip.textContent = contact.id;
-
-        output.appendChild(chip);
-
-
-        if (index < contacts.length - 1) {
-
-            const arrow = document.createElement("span");
-
-            arrow.className = "traversal-arrow";
-
-            arrow.textContent = "→";
-
-            output.appendChild(arrow);
-        }
+    $("traversal").scrollIntoView({
+        behavior: "smooth",
+        block: "center"
     });
+
+    notify("Inorder traversal completed!");
 }
 
 
-// ==========================================
-// 18. UPDATE DASHBOARD
-// ==========================================
+$("inorderAction").addEventListener("click", showInorder);
 
-function refreshDashboard() {
+$("sidebarTraversal").addEventListener("click", showInorder);
 
-    const contacts = bst.inorder();
+$("sortButton").addEventListener("click", () => {
 
-    document.getElementById("totalContacts")
-        .textContent = contacts.length;
+    renderContacts(bst.inorder());
 
-    document.getElementById("highestId")
-        .textContent = contacts.length
-            ? contacts[contacts.length - 1].id
-            : "—";
+    notify("Contacts arranged in ascending ID order.");
 
-    document.getElementById("lowestId")
-        .textContent = contacts.length
-            ? contacts[0].id
-            : "—";
-
-    document.getElementById("treeHeight")
-        .textContent = bst.height();
-
-    document.getElementById("nodeCount")
-        .textContent = contacts.length;
-
-    document.getElementById("rootNode")
-        .textContent = bst.root
-            ? `#${bst.root.id}`
-            : "EMPTY";
-
-    refreshTable(contacts);
-
-    renderTree();
-}
+});
 
 
-// ==========================================
-// 19. ACTUAL HIERARCHICAL BST VISUALIZER
-// ==========================================
+// ============================================
+// 17. ACTUAL BST TREE VISUALIZATION
+// ============================================
 
 function renderTree() {
 
-    const svg = document.getElementById("treeSvg");
+    const svg = $("treeSvg");
 
-    const empty = document.getElementById("emptyTree");
+    const empty = $("treeEmpty");
 
     svg.innerHTML = "";
 
@@ -860,8 +884,9 @@ function renderTree() {
 
         empty.style.display = "flex";
 
-        svg.style.width = "900px";
-        svg.style.height = "345px";
+        svg.style.width = "100%";
+
+        svg.style.height = "360px";
 
         return;
     }
@@ -869,104 +894,62 @@ function renderTree() {
     empty.style.display = "none";
 
 
-    // SVG namespace
-    const ns = "http://www.w3.org/2000/svg";
+    const NS = "http://www.w3.org/2000/svg";
+
+    const radius = 20;
+
+    const horizontalGap = 110;
+
+    const verticalGap = 90;
+
+    const margin = 70;
 
 
-    // TREE DIMENSIONS
-    const totalNodes = bst.count();
+    // Find number of leaves under each subtree.
+    // This provides enough horizontal room for every branch.
 
-    const treeHeight = bst.height();
+    function leafCount(node) {
 
-    const nodeRadius = 19;
+        if (!node) return 0;
 
-    const horizontalGap = 105;
+        if (!node.left && !node.right) return 1;
 
-    const verticalGap = 85;
-
-    const margin = 65;
-
-    const width = Math.max(
-        900,
-        totalNodes * horizontalGap + margin * 2
-    );
-
-    const height = Math.max(
-        345,
-        100 + treeHeight * verticalGap
-    );
-
-
-    svg.setAttribute(
-        "viewBox",
-        `0 0 ${width} ${height}`
-    );
-
-    svg.setAttribute(
-        "preserveAspectRatio",
-        "xMinYMin meet"
-    );
-
-    svg.style.width = `${width}px`;
-
-    svg.style.height = `${height}px`;
-
-
-    // ======================================
-    // STEP A: CALCULATE REAL NODE POSITIONS
-    // ======================================
-
-    const positions = new Map();
-
-    let inorderIndex = 0;
-
-
-    function calculatePositions(node, depth) {
-
-        if (!node) return;
-
-
-        // LEFT SUBTREE
-        calculatePositions(node.left, depth + 1);
-
-
-        // CURRENT NODE
-        const x = margin +
-            inorderIndex * horizontalGap;
-
-        const y = 48 + depth * verticalGap;
-
-
-        positions.set(node.id, {
-            x: x,
-            y: y,
-            node: node,
-            depth: depth
-        });
-
-        inorderIndex++;
-
-
-        // RIGHT SUBTREE
-        calculatePositions(node.right, depth + 1);
+        return leafCount(node.left) + leafCount(node.right);
     }
 
 
-    calculatePositions(bst.root, 0);
+    const totalLeaves = Math.max(1, leafCount(bst.root));
+
+    const width = Math.max(
+        850,
+        totalLeaves * horizontalGap + margin * 2
+    );
+
+    const height = Math.max(
+        360,
+        110 + bst.height() * verticalGap
+    );
 
 
-    // ======================================
-    // STEP B: SVG ELEMENT CREATOR
-    // ======================================
+    svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
 
-    function makeElement(tag, attributes, parent = svg) {
+    svg.setAttribute("width", width);
 
-        const element = document.createElementNS(ns, tag);
+    svg.setAttribute("height", height);
 
-        Object.entries(attributes).forEach(([key, value]) => {
+    svg.style.width = width + "px";
 
+    svg.style.height = height + "px";
+
+
+    // SVG element creator
+
+    function create(tag, attrs, parent = svg) {
+
+        const element = document.createElementNS(NS, tag);
+
+        Object.entries(attrs).forEach(([key, value]) => {
             element.setAttribute(key, value);
-
         });
 
         parent.appendChild(element);
@@ -975,67 +958,170 @@ function renderTree() {
     }
 
 
-    // ======================================
-    // STEP C: DRAW CONNECTIONS
-    // ======================================
+    // Glow and line gradients
 
-    function drawConnections(node) {
+    const defs = create("defs", {});
+
+    const gradient = create("linearGradient", {
+        id: "edgeGradient",
+        x1: "0%",
+        y1: "0%",
+        x2: "100%",
+        y2: "100%"
+    }, defs);
+
+    create("stop", {
+        offset: "0%",
+        "stop-color": "#49d7ed"
+    }, gradient);
+
+    create("stop", {
+        offset: "100%",
+        "stop-color": "#a16cff"
+    }, gradient);
+
+
+    const filter = create("filter", {
+        id: "edgeGlow",
+        x: "-50%",
+        y: "-50%",
+        width: "200%",
+        height: "200%"
+    }, defs);
+
+    create("feGaussianBlur", {
+        stdDeviation: "3",
+        result: "blur"
+    }, filter);
+
+    const merge = create("feMerge", {}, filter);
+
+    create("feMergeNode", {
+        in: "blur"
+    }, merge);
+
+    create("feMergeNode", {
+        in: "SourceGraphic"
+    }, merge);
+
+
+    const nodeFilter = create("filter", {
+        id: "nodeGlow",
+        x: "-100%",
+        y: "-100%",
+        width: "300%",
+        height: "300%"
+    }, defs);
+
+    create("feGaussianBlur", {
+        stdDeviation: "5",
+        result: "blur"
+    }, nodeFilter);
+
+    const nodeMerge = create("feMerge", {}, nodeFilter);
+
+    create("feMergeNode", {
+        in: "blur"
+    }, nodeMerge);
+
+    create("feMergeNode", {
+        in: "SourceGraphic"
+    }, nodeMerge);
+
+
+    // Position nodes using actual left/right subtree structure.
+    // The root is centered above its children.
+
+    const positions = new Map();
+
+    function layout(node, left, right, depth) {
+
+        if (!node) return;
+
+        const x = (left + right) / 2;
+
+        const y = 52 + depth * verticalGap;
+
+        positions.set(node.id, {
+            x,
+            y,
+            node
+        });
+
+
+        if (node.left) {
+
+            const leftWidth =
+                leafCount(node.left) * horizontalGap;
+
+            layout(
+                node.left,
+                left,
+                left + leftWidth,
+                depth + 1
+            );
+        }
+
+
+        if (node.right) {
+
+            const rightWidth =
+                leafCount(node.right) * horizontalGap;
+
+            layout(
+                node.right,
+                right - rightWidth,
+                right,
+                depth + 1
+            );
+        }
+    }
+
+
+    layout(
+        bst.root,
+        margin,
+        width - margin,
+        0
+    );
+
+
+    // Draw connecting branches first.
+
+    function drawEdges(node) {
 
         if (!node) return;
 
         const parent = positions.get(node.id);
 
+        ["left", "right"].forEach(side => {
 
-        // CONNECT LEFT CHILD
-        if (node.left) {
+            const childNode = node[side];
 
-            const child = positions.get(node.left.id);
+            if (!childNode) return;
 
-            makeElement("line", {
+            const child = positions.get(childNode.id);
 
-                x1: parent.x,
-                y1: parent.y + nodeRadius,
+            const middleY = (parent.y + child.y) / 2;
 
-                x2: child.x,
-                y2: child.y - nodeRadius,
+            // Smooth curved connection from parent to child
 
+            create("path", {
+                d: `M ${parent.x} ${parent.y + radius}
+                    C ${parent.x} ${middleY},
+                      ${child.x} ${middleY},
+                      ${child.x} ${child.y - radius}`,
                 class: "tree-edge"
-
             });
 
-            drawConnections(node.left);
-        }
-
-
-        // CONNECT RIGHT CHILD
-        if (node.right) {
-
-            const child = positions.get(node.right.id);
-
-            makeElement("line", {
-
-                x1: parent.x,
-                y1: parent.y + nodeRadius,
-
-                x2: child.x,
-                y2: child.y - nodeRadius,
-
-                class: "tree-edge"
-
-            });
-
-            drawConnections(node.right);
-        }
+            drawEdges(childNode);
+        });
     }
 
-
-    // Draw all branches before nodes
-    drawConnections(bst.root);
+    drawEdges(bst.root);
 
 
-    // ======================================
-    // STEP D: DRAW NODE CIRCLES
-    // ======================================
+    // Draw nodes.
 
     function drawNodes(node) {
 
@@ -1045,261 +1131,273 @@ function renderTree() {
 
         const isRoot = node === bst.root;
 
-
-        const group = makeElement("g", {
-
+        const group = create("g", {
             class: "tree-node",
-
-            "data-id": node.id
-
+            "data-id": node.id,
+            tabindex: "0",
+            role: "button",
+            "aria-label": `Contact ${node.id}: ${node.name}`
         });
 
 
-        // Node circle
-        makeElement("circle", {
+        // Root glow
 
-            cx: pos.x,
-            cy: pos.y,
-
-            r: nodeRadius,
-
-            fill: isRoot ? "#7650d8" : "#174c81",
-
-            stroke: isRoot ? "#d1aaff" : "#55c9ff",
-
-            "stroke-width": isRoot ? 3 : 2,
-
-            filter: isRoot
-                ? "url(#rootGlow)"
-                : "url(#nodeGlow)"
-
-        }, group);
-
-
-        // Contact ID
-        const label = makeElement("text", {
-
-            x: pos.x,
-
-            y: pos.y + 4,
-
-            "text-anchor": "middle",
-
-            fill: "#ffffff",
-
-            "font-size": "12",
-
-            "font-weight": "700"
-
-        }, group);
-
-
-        label.textContent = node.id;
-
-
-        // Root label
         if (isRoot) {
 
-            const rootLabel = makeElement("text", {
-
-                x: pos.x,
-
-                y: pos.y - 30,
-
-                "text-anchor": "middle",
-
-                fill: "#c5a7ff",
-
-                "font-size": "10",
-
-                "font-weight": "700"
-
+            create("circle", {
+                cx: pos.x,
+                cy: pos.y,
+                r: 29,
+                fill: "none",
+                stroke: "#ad83ff",
+                "stroke-width": 1,
+                opacity: .35
             }, group);
-
-            rootLabel.textContent = "ROOT";
         }
 
 
-        // Display contact information on clicking node
-        group.addEventListener("click", () => {
+        // Main node
 
-            showToast(
-                `${node.name} | ${node.phone} | ID: ${node.id}`
-            );
+        create("circle", {
+            cx: pos.x,
+            cy: pos.y,
+            r: radius,
+            fill: isRoot ? "#7850d5" : "#174d84",
+            stroke: isRoot ? "#d4b4ff" : "#5acfff",
+            "stroke-width": isRoot ? 3 : 2,
+            filter: "url(#nodeGlow)"
+        }, group);
 
+
+        // ID label
+
+        const text = create("text", {
+            x: pos.x,
+            y: pos.y + 4,
+            "text-anchor": "middle",
+            fill: "#ffffff",
+            "font-size": "12",
+            "font-family": "DM Sans, sans-serif",
+            "font-weight": "700"
+        }, group);
+
+        text.textContent = node.id;
+
+
+        // Root label
+
+        if (isRoot) {
+
+            const label = create("text", {
+                x: pos.x,
+                y: pos.y - 34,
+                "text-anchor": "middle",
+                fill: "#c8aaff",
+                "font-size": "9",
+                "font-weight": "700",
+                "letter-spacing": "1"
+            }, group);
+
+            label.textContent = "ROOT";
+        }
+
+
+        // Click to see contact details
+
+        const openDetails = () => showContactDetails(node);
+
+        group.addEventListener("click", openDetails);
+
+        group.addEventListener("keydown", event => {
+
+            if (event.key === "Enter" || event.key === " ") {
+
+                event.preventDefault();
+
+                openDetails();
+            }
         });
 
 
-        // LEFT SUBTREE
         drawNodes(node.left);
 
-
-        // RIGHT SUBTREE
         drawNodes(node.right);
     }
 
-
-    // ======================================
-    // STEP E: ADD GLOW EFFECTS
-    // ======================================
-
-    const defs = makeElement("defs", {});
-
-
-    const rootFilter = makeElement("filter", {
-
-        id: "rootGlow",
-
-        x: "-100%",
-
-        y: "-100%",
-
-        width: "300%",
-
-        height: "300%"
-
-    }, defs);
-
-
-    makeElement("feGaussianBlur", {
-
-        stdDeviation: "5",
-
-        result: "blur"
-
-    }, rootFilter);
-
-
-    const rootMerge = makeElement("feMerge", {}, rootFilter);
-
-    makeElement("feMergeNode", {
-        in: "blur"
-    }, rootMerge);
-
-    makeElement("feMergeNode", {
-        in: "SourceGraphic"
-    }, rootMerge);
-
-
-    const nodeFilter = makeElement("filter", {
-
-        id: "nodeGlow",
-
-        x: "-100%",
-
-        y: "-100%",
-
-        width: "300%",
-
-        height: "300%"
-
-    }, defs);
-
-
-    makeElement("feGaussianBlur", {
-
-        stdDeviation: "3",
-
-        result: "blur"
-
-    }, nodeFilter);
-
-
-    const nodeMerge = makeElement("feMerge", {}, nodeFilter);
-
-    makeElement("feMergeNode", {
-        in: "blur"
-    }, nodeMerge);
-
-    makeElement("feMergeNode", {
-        in: "SourceGraphic"
-    }, nodeMerge);
-
-
-    // Draw nodes last so branches stay behind them
     drawNodes(bst.root);
 }
 
 
-// ==========================================
-// 20. HIGHLIGHT SEARCHED CONTACT
-// ==========================================
+// ============================================
+// 18. HIGHLIGHT SEARCHED NODE
+// ============================================
 
-function highlightContact(id) {
+function highlightTreeNode(id) {
 
     const nodes = document.querySelectorAll(".tree-node");
 
-    nodes.forEach(group => {
+    nodes.forEach(node => {
 
-        const circle = group.querySelector("circle");
+        const circle = node.querySelector("circle");
 
-        if (Number(group.dataset.id) === id) {
+        if (Number(node.dataset.id) === id) {
 
             circle.setAttribute("stroke", "#ffffff");
 
             circle.setAttribute("stroke-width", "5");
 
-            circle.style.filter =
-                "drop-shadow(0 0 15px #ffffff)";
+            node.scrollIntoView({
+                behavior: "smooth",
+                block: "nearest",
+                inline: "center"
+            });
+
+            setTimeout(() => {
+
+                if (node.isConnected) {
+
+                    circle.setAttribute(
+                        "stroke",
+                        node.dataset.id == bst.root?.id
+                            ? "#d4b4ff"
+                            : "#5acfff"
+                    );
+
+                    circle.setAttribute(
+                        "stroke-width",
+                        node.dataset.id == bst.root?.id ? "3" : "2"
+                    );
+                }
+
+            }, 1800);
         }
     });
 }
 
 
-// ==========================================
-// 21. CLOSE MODAL OUTSIDE CLICK
-// ==========================================
+// ============================================
+// 19. DASHBOARD STATISTICS
+// ============================================
 
-document.getElementById("contactModal")
-.addEventListener("click", function(event) {
+function updateStatistics() {
 
-    if (event.target === this) {
+    const contacts = bst.inorder();
 
-        closeContactModal();
+    const total = contacts.length;
+
+    $("totalContacts").textContent = total;
+
+    $("sideCount").textContent = total;
+
+    $("nodeTotal").textContent = total;
+
+    $("rootId").textContent =
+        bst.root ? bst.root.id : "—";
+
+    $("treeRoot").textContent =
+        bst.root ? "#" + bst.root.id : "EMPTY";
+
+    $("treeHeight").textContent = bst.height();
+
+
+    // Structural balance indicator:
+    // compares the minimum and maximum subtree depths.
+    // This is a visual indicator, not a performance percentage.
+
+    if (total === 0) {
+
+        $("treeBalance").textContent = "—";
+
+    } else {
+
+        const difference =
+            bst.height() - bst.minimumHeight();
+
+        $("treeBalance").textContent =
+            difference <= 1 ? "Good" :
+            difference <= 3 ? "Fair" : "Skewed";
     }
+}
+
+
+// ============================================
+// 20. REFRESH ENTIRE DASHBOARD
+// ============================================
+
+function refreshDashboard() {
+
+    updateStatistics();
+
+    renderContacts();
+
+    renderTree();
+}
+
+
+// ============================================
+// 21. TREE FIT BUTTON
+// ============================================
+
+$("fitTree").addEventListener("click", () => {
+
+    const stage = $("treeStage");
+
+    stage.scrollTo({
+        left: Math.max(0, (stage.scrollWidth - stage.clientWidth) / 2),
+        top: 0,
+        behavior: "smooth"
+    });
+
+    notify("Tree view centered.");
 });
 
 
-// ==========================================
-// 22. ESCAPE KEY
-// ==========================================
+// ============================================
+// 22. NAVIGATION
+// ============================================
 
-document.addEventListener("keydown", function(event) {
+document.querySelectorAll(".nav-link[href]").forEach(link => {
 
-    if (event.key === "Escape") {
-
-        closeContactModal();
-    }
-});
-
-
-// ==========================================
-// 23. SIDEBAR ACTIVE LINK
-// ==========================================
-
-document.querySelectorAll(".nav-link").forEach(link => {
-
-    link.addEventListener("click", function() {
+    link.addEventListener("click", () => {
 
         document.querySelectorAll(".nav-link")
-            .forEach(item => {
+            .forEach(item => item.classList.remove("active"));
 
-                item.classList.remove("active");
-
-            });
-
-        this.classList.add("active");
+        link.classList.add("active");
     });
 });
 
 
-// ==========================================
-// 24. INITIALIZE CONTACTHUB
-// ==========================================
+// ============================================
+// 23. HELP BUTTON
+// ============================================
+
+$("helpButton").addEventListener("click", () => {
+
+    notify("ContactHub — Contact Management powered by BST.");
+});
+
+
+// ============================================
+// 24. KEYBOARD SUPPORT
+// ============================================
+
+document.addEventListener("keydown", event => {
+
+    if (event.key === "Escape") {
+
+        closeModal();
+
+        $("detailsModal").classList.remove("show");
+    }
+});
+
+
+// ============================================
+// 25. START APPLICATION
+// ============================================
 
 loadContacts();
 
 refreshDashboard();
-
-displayTraversal();
 
