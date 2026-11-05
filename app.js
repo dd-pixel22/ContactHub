@@ -622,8 +622,9 @@ function renderTree() {
         assignPositions(node.left, depth + 1);
 
         positions.set(node.id, {
-            x: 45 + index * (width - 90) /
-                Math.max(bst.count() - 1, 1),
+            x: bst.count() === 1
+    ? width / 2
+    : 45 + index * (width - 90) / (bst.count() - 1),
             y: 38 + depth * 67,
             node: node
         });
